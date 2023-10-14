@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.zurib1.mobileDelivery"
     },
     "web": {
       "favicon": "./assets/favicon.png"
