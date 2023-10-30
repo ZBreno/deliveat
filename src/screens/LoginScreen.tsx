@@ -11,7 +11,7 @@ export default function LoginScreen() {
   const [hideOverlay, setHideOverlay] = useState<boolean>(false);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
-  const snapPoints = useMemo(() => ["1%", "20%"], []);
+  const snapPoints = useMemo(() => ["20%", "20%"], []);
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
@@ -21,13 +21,6 @@ export default function LoginScreen() {
   const handleCloseModalPress = useCallback(() => {
     bottomSheetModalRef.current?.close();
     setHideOverlay(false);
-  }, []);
-
-  const handleSheetChanges = useCallback((index: number) => {
-    if (index == -1 || index == 0) {
-      setHideOverlay(false);
-      bottomSheetModalRef.current?.close();
-    }
   }, []);
 
   const theme = useTheme();
@@ -122,7 +115,7 @@ export default function LoginScreen() {
             ref={bottomSheetModalRef}
             index={1}
             snapPoints={snapPoints}
-            onChange={handleSheetChanges}
+            onDismiss={() => handleCloseModalPress()}
           >
             <View style={{ paddingHorizontal: 16 }}>
               <Text
