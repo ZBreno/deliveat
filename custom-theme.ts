@@ -8,7 +8,7 @@ export const light = {
   'color-primary-300': '#65B1F7',
   'color-primary-400': '#3E93F0',
   'color-primary-500': '#FF6D1B',
-  'color-primary-600': '#024EC6',
+  'color-primary-600': '#FF5C00',
   'color-primary-700': '#013AA6',
   'color-primary-800': '#002985',
   'color-primary-900': '#001D6E',
@@ -52,6 +52,7 @@ export const light = {
   'color-text': '#42464D',
   'color-bg-stroke': '#F2F4F6',
   'white': '#FFFFFF',
+  'disabled': '#ADB5BA',
 };
 
 export const dark = {

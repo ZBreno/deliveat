@@ -9,11 +9,13 @@ import { useFonts } from 'expo-font';
 import * as Font from 'expo-font';
 import WelcomeScreen from "../screens/WelcomeScreen";
 import LocationScreen from "../screens/LocationScreen";
+import SignUp from "../screens/SignUp";
 
 export type RootStackParamList = {
   Login: undefined;
   Welcome: undefined;
   Location: undefined;
+  SignUp: undefined;
   App: NavigatorScreenParams<AppStackParamList>;
 };
 
@@ -78,6 +80,11 @@ export default function RootStack() {
             <Stack.Screen
               name="Location"
               component={LocationScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUp}
               options={{ headerShown: false }}
             />
           </>

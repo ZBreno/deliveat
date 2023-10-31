@@ -13,21 +13,21 @@ interface Props {
 }
 
 export default function FieldWrapper({ label, caption, fieldState, children }: Props) {
-  const { isTouched, error } = fieldState;
-  const isError = isTouched && error;
+  const { error } = fieldState;
+  const isError = error;
   const status = isError ? 'danger' : 'basic';
 
   return (
     <View>
       {label && (
-        <Text category="label" status={status}>
+        <Text category="label" style={{marginBottom: 4, fontSize: 13}} status={status}>
           {label}
         </Text>
       )}
 
       {typeof children === 'function' ? children({ status }) : children}
 
-      {isError && <Text status="danger">{error.message}</Text>}
+      {isError && <Text status="danger" style={{fontSize: 12}}>{error.message}</Text>}
       {caption && <Text appearance="hint">{caption}</Text>}
     </View>
   );

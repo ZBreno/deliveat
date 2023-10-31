@@ -1,10 +1,19 @@
-import { View } from "react-native";
+import { Image, ScrollView, TouchableOpacity, View } from "react-native";
 import React from "react";
-import { Text } from "@ui-kitten/components";
+import { Button, Text, useTheme } from "@ui-kitten/components";
 import { useForm } from "react-hook-form";
 import { InputField } from "../components/Form/FormFields";
 import Icon from "../components/Icon";
-export default function LocationScreen() {
+import HeaderNavigation from "../components/HeaderNavigation";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../navigators/RootStack";
+import ArrowBack from "../components/ArrowBack";
+
+type LocationScreenProps = StackScreenProps<RootStackParamList, "Location">;
+
+export default function LocationScreen({ navigation }: LocationScreenProps) {
+  const theme = useTheme();
+
   const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       location: "",
@@ -14,16 +23,20 @@ export default function LocationScreen() {
   return (
     <View
       style={{
-        backgroundColor: "white",
         flex: 1,
         paddingHorizontal: 16,
-        justifyContent: "center",
+        backgroundColor: "white",
       }}
     >
-      <View style={{ gap: 16 }}>
-        <Text style={{ textAlign: "center", fontSize: 16 }}>
+      <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+        <HeaderNavigation
+          childrenLeft={<ArrowBack navigation={navigation} />}
+        />
+
+        <Text style={{ textAlign: "center", fontSize: 16, marginBottom: 16 }}>
           Em que local deseja receber seu pedido?
         </Text>
+
         <InputField
           name="location"
           control={control}
@@ -33,23 +46,81 @@ export default function LocationScreen() {
             <Icon name="search" themeFillColor="color-primary-500" size={24} />
           )}
         />
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Icon name="pin-outline" size={32} />
-            <View style={{ marginLeft: 4 }}>
-              <Text category="label">Usar minha localização</Text>
-              <Text category="c1">Ativar permissão</Text>
+        <Button
+          appearance="ghost"
+          onPress={() => {
+            alert("calmo pae");
+          }}
+          style={{
+            justifyContent: "flex-start",
+            paddingHorizontal: 0,
+            paddingVertical: 8,
+            marginTop: 8,
+            backgroundColor: "transparent",
+          }}
+          accessoryRight={() => (
+            <View style={{ marginRight: -8 }}>
+              <Icon
+                name="chevron-right-outline"
+                size={26}
+                themeFillColor="color-primary-500"
+              />
             </View>
-          </View>
-          <View>
-            <Icon
-              name="arrow-ios-forward-outline"
-              size={24}
-              themeFillColor="color-primary-500"
-            />
-          </View>
+          )}
+        >
+          {() => (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                flex: 1,
+                marginLeft: -4,
+              }}
+            >
+              <Icon name="pin-outline" size={32} />
+              <View style={{ marginLeft: 4 }}>
+                <Text category="label">Usar minha localização</Text>
+                <Text category="c1">Ativar permissão</Text>
+              </View>
+            </View>
+          )}
+        </Button>
+
+        <View style={{ alignItems: "center", marginTop: 40 }}>
+          <Image source={require("../assets/location-dinner.png")} />
         </View>
-      </View>
+        
+        <View style={{ flex: 1  }}>
+          <Text style={{ textAlign: "center", marginTop: 24, fontSize: 14}}>
+            Já tem uma conta?
+          </Text>
+          <Button
+            appearance="ghost"
+            size="small"
+            style={{
+              paddingHorizontal: 0,
+              paddingVertical: 0,
+              marginTop: -8,
+              backgroundColor: "transparent",
+            }}
+            onPress={() => navigation.navigate("Login")}
+          >
+            {(evaprops) => (
+              <Text
+                {...evaprops}
+                category="label"
+                style={{
+                  fontSize: 13,
+                  color: theme["color-primary-500"],
+                  
+                }}
+              >
+                Entre aqui
+              </Text>
+            )}
+          </Button>
+        </View>
+      </ScrollView>
     </View>
   );
 }
