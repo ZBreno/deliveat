@@ -7,7 +7,7 @@ export const light = {
   'color-primary-200': '#98D1FC',
   'color-primary-300': '#65B1F7',
   'color-primary-400': '#3E93F0',
-  'color-primary-500': '#157AFE',
+  'color-primary-500': '#FF6D1B',
   'color-primary-600': '#024EC6',
   'color-primary-700': '#013AA6',
   'color-primary-800': '#002985',

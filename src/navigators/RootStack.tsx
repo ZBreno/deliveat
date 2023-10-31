@@ -7,9 +7,13 @@ import AppStack, { AppStackParamList } from "./AppStack";
 import LoginScreen from "../screens/LoginScreen";
 import { useFonts } from 'expo-font';
 import * as Font from 'expo-font';
+import WelcomeScreen from "../screens/WelcomeScreen";
+import LocationScreen from "../screens/LocationScreen";
 
 export type RootStackParamList = {
   Login: undefined;
+  Welcome: undefined;
+  Location: undefined;
   App: NavigatorScreenParams<AppStackParamList>;
 };
 
@@ -62,8 +66,18 @@ export default function RootStack() {
         {user === true ? (
           <>
             <Stack.Screen
+              name="Welcome"
+              component={WelcomeScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
               name="Login"
               component={LoginScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Location"
+              component={LocationScreen}
               options={{ headerShown: false }}
             />
           </>
