@@ -5,14 +5,15 @@ import HeaderNavigation from "../components/HeaderNavigation";
 import ArrowBack from "../components/ArrowBack";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigators/RootStack";
-import { InputField, InputMaskField } from "../components/Form/FormFields";
+import { DatePickerField, InputField, InputMaskField } from "../components/Form/FormFields";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { validateCPF } from "../utils/validateDocument";
 import { Masks } from "react-native-mask-input";
+import { dateYearsFromNow } from "../utils/dateUtils";
 
-type SignUpScreenProps = StackScreenProps<RootStackParamList, "SignUp">;
+export type SignUpScreenProps = StackScreenProps<RootStackParamList, "SignUp">;
 
 export default function SignUp({ navigation }: SignUpScreenProps) {
   const theme = useTheme();
@@ -56,7 +57,7 @@ export default function SignUp({ navigation }: SignUpScreenProps) {
     <View style={{ flex: 1, backgroundColor: "white", paddingHorizontal: 16 }}>
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <HeaderNavigation
-          childrenLeft={<ArrowBack navigation={navigation} />}
+          childrenLeft={<ArrowBack />}
         />
         <Text category="h6" style={{ marginBottom: 16 }}>
           Meus dados
@@ -69,11 +70,12 @@ export default function SignUp({ navigation }: SignUpScreenProps) {
             label="Nome*"
             placeholder="Digite seu nome"
           />
-          <InputField
+          <DatePickerField
             control={control}
             name="birthdate"
             label="Data de nascimento*"
-            placeholder="Escolha uma data"
+            placeholder="Selecione uma data"
+            max={dateYearsFromNow(18)}
           />
           <InputMaskField
             control={control}

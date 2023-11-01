@@ -11,7 +11,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { AppStackParamList } from "../navigators/AppStack";
 import { RootStackParamList } from "../navigators/RootStack";
 
-type WelcomeScreenProps = StackScreenProps<RootStackParamList, 'Welcome'>
+export type WelcomeScreenProps = StackScreenProps<RootStackParamList, 'Welcome'>
 
 
 export default function WelcomeScreen({navigation}: WelcomeScreenProps) {

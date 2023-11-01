@@ -3,12 +3,15 @@ import type { NavigatorScreenParams } from "@react-navigation/native";
 import { Icon, useTheme } from "@ui-kitten/components";
 import React from "react";
 
-import SearchStack, { SearchStackParamlist } from "./SearchTabs";
+import SearchStack, { SearchStackParamlist } from "./SearchStack";
 import OrderStack, { OrderStackParamlist } from "./OrderStack";
 import ShopStack, { ShopStackParamlist } from "./ShopStack";
 import ProfileStack, { ProfileStackParamlist } from "./ProfileStack";
 import TabBarComponent from "../components/TabBar";
 import HomeStack, { HomeStackParamlist } from "./HomeStack";
+import NotificationScreen from "../screens/NotificationScreen";
+import { createStackNavigator } from "@react-navigation/stack";
+import { NotificationStackParamList } from "./NotificationStack";
 
 export type HomeTabsParamList = {
   HomeTab: NavigatorScreenParams<HomeStackParamlist>;
@@ -19,6 +22,8 @@ export type HomeTabsParamList = {
 };
 
 const Tab = createBottomTabNavigator<HomeTabsParamList>();
+
+const Stack = createStackNavigator<NotificationStackParamList>();
 
 export default function HomeTabs() {
   const theme = useTheme();
@@ -60,7 +65,9 @@ export default function HomeTabs() {
       <Tab.Screen
         name="HomeTab"
         component={HomeStack}
-        options={{ title: "Início" }}
+        options={{
+          title: "Início",
+        }}
       />
       <Tab.Screen
         name="SearchTab"

@@ -12,8 +12,8 @@ export default function HeaderNavigation({
 }: HeaderNavigationProps) {
   return (
     <View style={{ justifyContent: "space-between", marginTop: 48, marginBottom: 24, flexDirection: 'row' }}>
-      <View>{childrenLeft}</View>
-      <View style={{flex: 1}}>{childrenRight}</View>
+      <View style={{flex: 1}}>{childrenLeft}</View>
+      <View style={{flex: 1, alignItems: 'flex-end'}}>{childrenRight}</View>
     </View>
   );
 }

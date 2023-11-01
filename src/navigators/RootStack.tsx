@@ -65,7 +65,7 @@ export default function RootStack() {
     <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
 
       <Stack.Navigator>
-        {user === true ? (
+        {user === false ? (
           <>
             <Stack.Screen
               name="Welcome"

@@ -9,7 +9,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigators/RootStack";
 import ArrowBack from "../components/ArrowBack";
 
-type LocationScreenProps = StackScreenProps<RootStackParamList, "Location">;
+export type LocationScreenProps = StackScreenProps<RootStackParamList, "Location">;
 
 export default function LocationScreen({ navigation }: LocationScreenProps) {
   const theme = useTheme();
@@ -30,7 +30,7 @@ export default function LocationScreen({ navigation }: LocationScreenProps) {
     >
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <HeaderNavigation
-          childrenLeft={<ArrowBack navigation={navigation} />}
+          childrenLeft={<ArrowBack />}
         />
 
         <Text style={{ textAlign: "center", fontSize: 16, marginBottom: 16 }}>

@@ -12,7 +12,7 @@ import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Icon from "../components/Icon";
 
-type LoginScreenProps = StackScreenProps<RootStackParamList, "Login">;
+export type LoginScreenProps = StackScreenProps<RootStackParamList, "Login">;
 
 export default function LoginScreen({ navigation }: LoginScreenProps) {
   const theme = useTheme();
@@ -48,7 +48,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
     >
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
         <HeaderNavigation
-          childrenLeft={<ArrowBack navigation={navigation} />}
+          childrenLeft={<ArrowBack />}
         />
         <Text style={{ textAlign: "center" }} category="h6">
           Bem-vindo de volta!
