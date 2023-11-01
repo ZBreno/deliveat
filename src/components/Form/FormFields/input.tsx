@@ -38,7 +38,6 @@ export default function InputField({
       {({ status }) => (
         <>
           <Input
-            size='medium'
             status={status}
             value={transform.input(field.value)}
             onChangeText={(value) => field.onChange(transform.output(value))}

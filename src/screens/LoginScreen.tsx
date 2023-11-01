@@ -88,7 +88,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
         <Button
           size="small"
-          style={{ marginTop: 16, borderRadius: 12 }}
+          style={{ marginTop: 16, borderRadius: 8 }}
           onPress={handleSubmit(onSubmit)}
         >
           {() => (

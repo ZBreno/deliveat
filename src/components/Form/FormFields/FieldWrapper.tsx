@@ -20,7 +20,7 @@ export default function FieldWrapper({ label, caption, fieldState, children }: P
   return (
     <View>
       {label && (
-        <Text category="label" style={{marginBottom: 4, fontSize: 13}} status={status}>
+        <Text style={{marginBottom: 4, fontSize: 13}} status={status}>
           {label}
         </Text>
       )}
