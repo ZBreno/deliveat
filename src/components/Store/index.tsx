@@ -20,7 +20,7 @@ type StoreProps = {
 export default function Store({
   name,
   category,
-  cost_delivery,
+  cost_delivery, 
   image,
   open,
   rate,

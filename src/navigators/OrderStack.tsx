@@ -16,7 +16,7 @@ export default function OrderStack() {
         name="Order"
         component={OrderScreen}
         options={{
-          title: "tela de pedidos",
+         headerShown: false,
         }}
       />
     </Stack.Navigator>

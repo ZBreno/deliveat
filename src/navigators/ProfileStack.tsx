@@ -16,7 +16,7 @@ export default function ProfileStack() {
         name="Profile"
         component={ProfileScreen}
         options={{
-          title: "tela de perfil",
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

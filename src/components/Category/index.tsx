@@ -7,6 +7,7 @@ type CategoryProps = {
   source: any;
   width: number;
   height: number;
+  borderRadius: number;
 };
 
 export default function Category({
@@ -14,16 +15,16 @@ export default function Category({
   source,
   height,
   width,
+  borderRadius,
 }: CategoryProps) {
   return (
-    <View >
+    <View>
       <Image
         source={source}
         resizeMode="cover"
-        width={width}
-        height={height}
+        style={{ height: height, width: width, borderRadius: borderRadius }}
       />
-      <Text style={{textAlign: 'center', fontSize: 12}}>{title}</Text>
+      <Text style={{ textAlign: "center", fontSize: 12, marginTop: 2 }}>{title}</Text>
     </View>
   );
 }

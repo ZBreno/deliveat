@@ -7,10 +7,11 @@ import { StackScreenProps } from "@react-navigation/stack";
 import { HomeStackParamlist } from "../navigators/HomeStack";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NotificationStackParamList } from "../navigators/NotificationStack";
-import NotificationTicket from "../components/Notification";
-import Ticket from "../components/ticket";
+import NotificationTicket from "../components/NotificationIcon";
+import Ticket from "../components/Ticket";
 import Establishment from "../components/Establishment";
 import Store from "../components/Store";
+import LocationUser from "../components/LocationUser";
 
 export type LoginScreenProps = CompositeScreenProps<
   StackScreenProps<HomeStackParamlist, "Home">,
@@ -119,7 +120,7 @@ export default function HomeScreen() {
     },
     {
       image: require('../assets/restaurant-category.png'),
-      name: 'Burguer King',
+      name: 'Subway',
       category: 'Restaurante',
       open: false,
       time: '20-30min',
@@ -134,9 +135,10 @@ export default function HomeScreen() {
         flex: 1,
         paddingHorizontal: 16,
       }}
+      showsVerticalScrollIndicator={false}
     >
       <HeaderNavigation
-        childrenLeft={<Text category="s1">Cidade onde estou</Text>}
+        childrenLeft={<LocationUser/>}
         childrenRight={<NotificationTicket />}
       />
 
@@ -169,6 +171,7 @@ export default function HomeScreen() {
                 width={item.width}
                 height={item.height}
                 source={item.source}
+                borderRadius={8}
               />
             </TouchableOpacity>
           )}
@@ -211,8 +214,8 @@ export default function HomeScreen() {
 
       <View style={{ gap: 16, marginBottom: 24 }}>
         {stories.map(({ name, category, cost_delivery, image, open, rate, time }, index) => (
-          <TouchableOpacity onPress={() => alert('que isso meu filho, calma')}>
-          <Store key={index} name={name} category={category} cost_delivery={cost_delivery} image={image} open={open} rate={rate} time={time}/>
+          <TouchableOpacity key={index} onPress={() => alert('que isso meu filho, calma')}>
+          <Store  name={name} category={category} cost_delivery={cost_delivery} image={image} open={open} rate={rate} time={time}/>
           </TouchableOpacity>
         ))}
       </View>

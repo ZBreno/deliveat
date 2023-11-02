@@ -10,14 +10,13 @@ export type SearchStackParamlist = {
 const Stack = createStackNavigator<SearchStackParamlist>();
 
 export default function SearchStack() {
-
   return (
     <Stack.Navigator>
       <Stack.Screen
         name="Search"
         component={SearchScreen}
         options={{
-          title: "tela de procurar por estabelecimentos",
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

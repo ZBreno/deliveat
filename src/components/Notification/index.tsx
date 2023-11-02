@@ -1,48 +1,66 @@
-import { TouchableOpacity, View } from "react-native";
+import { View, Image } from "react-native";
 import React from "react";
-import { Text, useTheme } from "@ui-kitten/components";
-import Icon from "../Icon";
-import { NotificationScreenProps } from "../../screens/NotificationScreen";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { AppStackParamList } from "../../navigators/AppStack";
+import { Text, TextElement, useTheme } from "@ui-kitten/components";
+import reactStringReplace from "react-string-replace";
 
-
-export default function NotificationTicket() {
-  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
+type NotificationProps = {
+  title: string;
+  description: string;
+  code: string;
+  time: string;
+};
+export default function Notification({
+  title,
+  description,
+  code,
+  time,
+}: NotificationProps) {
   const theme = useTheme();
+
+  const descripitionReplaced = reactStringReplace(
+    description,
+    code,
+    (match) => (
+      <Text style={{ fontFamily: "Poppins-SemiBold", fontSize: 13 }}>
+        {match}
+      </Text>
+    )
+  );
+
   return (
-    <TouchableOpacity
-      style={{ flexDirection: "row", flex: 1, position: "relative" }}
-      onPress={() => navigation.navigate('NotificationStack')}
+    <View
+      style={{
+        flexDirection: "row",
+        backgroundColor: theme["color-bg-stroke"],
+        borderRadius: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        gap: 16,
+        borderWidth: 0.5,
+        borderColor: theme["color-border"],
+      }}
     >
-      <View
-        style={{
-          backgroundColor: theme["color-primary-500"],
-          width: 12,
-          height: 12,
-          borderRadius: 6,
-          marginLeft: 2,
-          position: "absolute",
-          zIndex: 1,
-          left: -1,
-        }}
-      >
+      <View style={{ justifyContent: "center" }}>
+        <Image
+          source={require("../../assets/icon-notification.png")}
+          style={{ width: 80, height: 64 }}
+        />
+      </View>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 14, fontFamily: "Poppins-SemiBold" }}>
+          {title}
+        </Text>
+        <Text style={{ fontSize: 12 }}>
+          {descripitionReplaced[0] as TextElement}
+          {descripitionReplaced[1] as TextElement}
+          {descripitionReplaced[2] as TextElement}
+        </Text>
         <Text
-          style={{
-            fontWeight: "bold",
-            fontSize: 12,
-            position: "absolute",
-            color: theme["white"],
-            alignItems: "center",
-            justifyContent: "center",
-            left: 2,
-            top: -3,
-          }}
+          style={{ fontSize: 11, marginTop: 10, color: theme["color-sended"] }}
         >
-          5
+          {time}
         </Text>
       </View>
-      <Icon name="bell-outline" themeFillColor="color-primary-500" size={28} />
-    </TouchableOpacity>
+    </View>
   );
 }

@@ -16,7 +16,7 @@ export default function NotificationStack() {
         name="Notification"
         component={NotificationScreen}
         options={{
-          title: "tela de notificações",
+          headerShown: false,
         }}
       />
     </Stack.Navigator>
