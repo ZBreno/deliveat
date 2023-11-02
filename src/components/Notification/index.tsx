@@ -32,18 +32,17 @@ export default function NotificationTicket() {
             fontWeight: "bold",
             fontSize: 12,
             position: "absolute",
-
             color: theme["white"],
             alignItems: "center",
             justifyContent: "center",
             left: 2,
-            top: -2.5,
+            top: -3,
           }}
         >
           5
         </Text>
       </View>
-      <Icon name="bell-outline" themeFillColor="color-primary-500" size={24} />
+      <Icon name="bell-outline" themeFillColor="color-primary-500" size={28} />
     </TouchableOpacity>
   );
 }

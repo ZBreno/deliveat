@@ -19,7 +19,7 @@ export default function Category({
     <View >
       <Image
         source={source}
-        resizeMode="contain"
+        resizeMode="cover"
         width={width}
         height={height}
       />
