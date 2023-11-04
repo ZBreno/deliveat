@@ -75,17 +75,21 @@ export default function NotificationScreen() {
         }
         childrenRight={<View />}
       />
-      <View style={{ gap: 24, marginBottom: 32 }}>
-        {notifications.map(({ code, description, time, title }, index) => (
-          <Notification
-            key={index}
-            code={code}
-            description={description}
-            time={time}
-            title={title}
-          />
-        ))}
-      </View>
+      {notifications ? (
+        <View style={{ gap: 24, marginBottom: 32 }}>
+          {notifications.map(({ code, description, time, title }, index) => (
+            <Notification
+              key={index}
+              code={code}
+              description={description}
+              time={time}
+              title={title}
+            />
+          ))}
+        </View>
+      ) : (
+        <Text>Você não tem notificações</Text>
+      )}
     </ScrollView>
   );
 }

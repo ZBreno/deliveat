@@ -28,7 +28,7 @@ export default function FieldWrapper({ label, caption, fieldState, children }: P
       {typeof children === 'function' ? children({ status }) : children}
 
       {isError && <Text status="danger" style={{fontSize: 12}}>{error.message}</Text>}
-      {caption && <Text appearance="hint">{caption}</Text>}
+      {caption && <Text appearance="hint" style={{fontSize: 12, marginTop: 2}}>{caption}</Text>}
     </View>
   );
 }

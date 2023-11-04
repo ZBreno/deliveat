@@ -2,6 +2,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 import OrderScreen from "../screens/OrderScreen";
 
+
 export type OrderStackParamlist = {
   Order: undefined;
 };
@@ -19,6 +20,7 @@ export default function OrderStack() {
          headerShown: false,
         }}
       />
+      
     </Stack.Navigator>
   );
 }
