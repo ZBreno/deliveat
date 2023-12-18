@@ -13,12 +13,12 @@ import Establishment from "../components/Establishment";
 import Store from "../components/Store";
 import LocationUser from "../components/LocationUser";
 
-export type LoginScreenProps = CompositeScreenProps<
+export type HomeScreenProps = CompositeScreenProps<
   StackScreenProps<HomeStackParamlist, "Home">,
   StackScreenProps<NotificationStackParamList>
 >;
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}: HomeScreenProps) {
   const categories = [
     {
       title: "Restaurantes",
@@ -214,7 +214,7 @@ export default function HomeScreen() {
 
       <View style={{ gap: 16, marginBottom: 24 }}>
         {stories.map(({ name, category, cost_delivery, image, open, rate, time }, index) => (
-          <TouchableOpacity key={index} onPress={() => alert('que isso meu filho, calma')}>
+          <TouchableOpacity key={index} onPress={() => navigation.navigate('ProfileStore')}>
           <Store  name={name} category={category} cost_delivery={cost_delivery} image={image} open={open} rate={rate} time={time}/>
           </TouchableOpacity>
         ))}
