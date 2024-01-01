@@ -11,6 +11,7 @@ import { InputField } from "../components/Form/FormFields";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Icon from "../components/Icon";
+import { useAuth } from "../hooks/useAuth";
 
 export type LoginScreenProps = StackScreenProps<RootStackParamList, "Login">;
 
@@ -27,15 +28,23 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
   });
 
   const { control, handleSubmit, formState } = useForm({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
       email: "",
       password: "",
     },
     resolver: yupResolver(schema),
   });
+  const { loginMutation } = useAuth();
 
-  const onSubmit = (data) => alert(JSON.stringify(data, null, 2));
+  const handleLogin = (values) => {
+    loginMutation.mutate(values, {
+      onSuccess: () => {},
+      onError: () => {
+        alert("Senha ou email incorreto!");
+      },
+    });
+  };
 
   return (
     <View
@@ -47,9 +56,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
       }}
     >
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        <HeaderNavigation
-          childrenLeft={<ArrowBack />}
-        />
+        <HeaderNavigation childrenLeft={<ArrowBack />} />
         <Text style={{ textAlign: "center" }} category="h6">
           Bem-vindo de volta!
         </Text>
@@ -89,13 +96,10 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
         <Button
           size="small"
           style={{ marginTop: 16, borderRadius: 8 }}
-          onPress={handleSubmit(onSubmit)}
+          onPress={handleSubmit(handleLogin)}
         >
           {() => (
-            <Text
-              category="s2"
-              style={{ color: theme["white" ] }}
-            >
+            <Text category="s2" style={{ color: theme["white"] }}>
               Entrar
             </Text>
           )}

@@ -6,18 +6,24 @@ import { NavigationContainer } from "@react-navigation/native";
 import RootStack from "./src/navigators/RootStack";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 import { light as lightTheme } from "./custom-theme";
-import { default as mapping } from './mapping.json';
+import { default as mapping } from "./mapping.json";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AuthProvider } from "./src/providers/auth";
 
+const queryClient = new QueryClient();
 
 export default function App() {
-
   return (
     <>
       <IconRegistry icons={EvaIconsPack} />
       <ApplicationProvider {...eva} theme={lightTheme} customMapping={mapping}>
-        <NavigationContainer>
-          <RootStack />
-        </NavigationContainer>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <NavigationContainer>
+              <RootStack />
+            </NavigationContainer>
+          </AuthProvider>
+        </QueryClientProvider>
       </ApplicationProvider>
     </>
   );

@@ -1,17 +1,22 @@
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, ToastAndroid } from "react-native";
 import React from "react";
 import { Button, Text, useTheme } from "@ui-kitten/components";
 import HeaderNavigation from "../components/HeaderNavigation";
 import ArrowBack from "../components/ArrowBack";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigators/RootStack";
-import { DatePickerField, InputField, InputMaskField } from "../components/Form/FormFields";
+import {
+  DatePickerField,
+  InputField,
+  InputMaskField,
+} from "../components/Form/FormFields";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { validateCPF } from "../utils/validateDocument";
 import { Masks } from "react-native-mask-input";
 import { dateYearsFromNow } from "../utils/dateUtils";
+import { useCreateAccount } from "../hooks/user";
 
 export type SignUpScreenProps = StackScreenProps<RootStackParamList, "SignUp">;
 
@@ -21,7 +26,7 @@ export default function SignUp({ navigation }: SignUpScreenProps) {
   const schema = Yup.object().shape({
     name: Yup.string().required("Esse campo é obrigatório"),
     birthdate: Yup.date().required("Esse campo é obrigatório"),
-    cpf: Yup.string()
+    document: Yup.string()
       .max(14, "CPF inválido")
       .test("valid-cpf", "CPF inválido", (value) => {
         // Chame sua função de validação de CPF aqui
@@ -51,14 +56,27 @@ export default function SignUp({ navigation }: SignUpScreenProps) {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) => alert(JSON.stringify(data, null, 2));
+  const createAccountMutation = useCreateAccount();
+
+  const onSubmit = (data) => {
+    createAccountMutation.mutate(
+      {
+        ...data,
+        role: "Client",
+      },
+      {
+        onSuccess: () => {
+          ToastAndroid.show("Conta criada!", ToastAndroid.SHORT),
+            navigation.navigate("Login");
+        },
+      }
+    );
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "white", paddingHorizontal: 16 }}>
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        <HeaderNavigation
-          childrenLeft={<ArrowBack />}
-        />
+        <HeaderNavigation childrenLeft={<ArrowBack />} />
         <Text category="h6" style={{ marginBottom: 16 }}>
           Meus dados
         </Text>
@@ -79,7 +97,7 @@ export default function SignUp({ navigation }: SignUpScreenProps) {
           />
           <InputMaskField
             control={control}
-            name="cpf"
+            name="document"
             label="CPF*"
             placeholder="Digite seu CPF"
             mask={Masks.BRL_CPF}
@@ -102,12 +120,14 @@ export default function SignUp({ navigation }: SignUpScreenProps) {
             name="password"
             label="Senha*"
             placeholder="Digite sua senha"
+            secureTextEntry={true}
           />
           <InputField
             control={control}
             name="confirmPassword"
             label="Confirme sua senha*"
             placeholder="Digite seu senha novamente"
+            secureTextEntry={true}
           />
 
           <Button

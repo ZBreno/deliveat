@@ -12,45 +12,16 @@ import Ticket from "../components/Ticket";
 import Establishment from "../components/Establishment";
 import Store from "../components/Store";
 import LocationUser from "../components/LocationUser";
+import { useGetCategories } from "../hooks/categories";
+import LoadingContainer from "../components/LoadingContainer";
 
 export type HomeScreenProps = CompositeScreenProps<
   StackScreenProps<HomeStackParamlist, "Home">,
   StackScreenProps<NotificationStackParamList>
 >;
 
-export default function HomeScreen({navigation}: HomeScreenProps) {
-  const categories = [
-    {
-      title: "Restaurantes",
-      width: 80,
-      height: 58,
-      source: require("../assets/restaurant-category.png"),
-    },
-    {
-      title: "Bebidas",
-      width: 80,
-      height: 58,
-      source: require("../assets/drinks-category.png"),
-    },
-    {
-      title: "Padarias",
-      width: 80,
-      height: 58,
-      source: require("../assets/bakery-category.png"),
-    },
-    {
-      title: "Lanchonetes",
-      width: 80,
-      height: 58,
-      source: require("../assets/snackbar-category.png"),
-    },
-    {
-      title: "Lanchonetes1",
-      width: 80,
-      height: 58,
-      source: require("../assets/snackbar-category.png"),
-    },
-  ];
+export default function HomeScreen({ navigation }: HomeScreenProps) {
+  const { isPending: isPendingCategory, isError, data: categories } = useGetCategories();
 
   const tickets = [
     {
@@ -101,33 +72,37 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
   ];
   const stories = [
     {
-      image: require('../assets/bakery-category.png'),
-      name: 'McDonalds',
-      category: 'Restaurante',
+      image: require("../assets/bakery-category.png"),
+      name: "McDonalds",
+      category: "Restaurante",
       open: true,
-      time: '20-30min',
-      cost_delivery: '7,00',
-      rate: '4.8'
+      time: "20-30min",
+      cost_delivery: "7,00",
+      rate: "4.8",
     },
     {
-      image: require('../assets/snackbar-category.png'),
-      name: 'Burguer King',
-      category: 'Restaurante',
+      image: require("../assets/snackbar-category.png"),
+      name: "Burguer King",
+      category: "Restaurante",
       open: true,
-      time: '20-30min',
-      cost_delivery: '7,00',
-      rate: '4.8'
+      time: "20-30min",
+      cost_delivery: "7,00",
+      rate: "4.8",
     },
     {
-      image: require('../assets/restaurant-category.png'),
-      name: 'Subway',
-      category: 'Restaurante',
+      image: require("../assets/restaurant-category.png"),
+      name: "Subway",
+      category: "Restaurante",
       open: false,
-      time: '20-30min',
-      cost_delivery: '7,00',
-      rate: '4.8'
+      time: "20-30min",
+      cost_delivery: "7,00",
+      rate: "4.8",
     },
-  ]
+  ];
+
+  if (isPendingCategory){
+    return <LoadingContainer/>
+  }
   return (
     <ScrollView
       style={{
@@ -138,7 +113,7 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       showsVerticalScrollIndicator={false}
     >
       <HeaderNavigation
-        childrenLeft={<LocationUser/>}
+        childrenLeft={<LocationUser />}
         childrenRight={<NotificationTicket />}
       />
 
@@ -159,18 +134,18 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
           data={categories}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.title}
+          keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
-              key={item.title}
+              key={item.name}
               onPress={() => alert("dasd")}
               style={{ marginRight: 16 }}
             >
               <Category
-                title={item.title}
-                width={item.width}
-                height={item.height}
-                source={item.source}
+                title={item.name}
+                width={80}
+                height={58}
+                source={require("../assets/snackbar-category.png")}
                 borderRadius={8}
               />
             </TouchableOpacity>
@@ -213,14 +188,28 @@ export default function HomeScreen({navigation}: HomeScreenProps) {
       </Text>
 
       <View style={{ gap: 16, marginBottom: 24 }}>
-        {stories.map(({ name, category, cost_delivery, image, open, rate, time }, index) => (
-          <TouchableOpacity key={index} onPress={() => navigation.navigate('ProfileStore')}>
-          <Store  name={name} category={category} cost_delivery={cost_delivery} image={image} open={open} rate={rate} time={time}/>
-          </TouchableOpacity>
-        ))}
+        {stories.map(
+          (
+            { name, category, cost_delivery, image, open, rate, time },
+            index
+          ) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => navigation.navigate("ProfileStore")}
+            >
+              <Store
+                name={name}
+                category={category}
+                cost_delivery={cost_delivery}
+                image={image}
+                open={open}
+                rate={rate}
+                time={time}
+              />
+            </TouchableOpacity>
+          )
+        )}
       </View>
-      
-    
     </ScrollView>
   );
 }

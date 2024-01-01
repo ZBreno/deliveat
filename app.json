@@ -13,6 +13,7 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "com.zurib1.deliveat",
       "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true
     },
@@ -27,6 +28,13 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["@react-native-google-signin/google-signin"]
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.915792855679-ms1jr28ms47mvc4hgk0bj390vf9ac7af"
+        }
+      ]
+    ]
   }
 }
