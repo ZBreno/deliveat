@@ -5,13 +5,12 @@ import ProfileStoreScreen from "../screens/ProfileStoreScreen";
 
 export type HomeStackParamlist = {
   Home: undefined;
-  ProfileStore: undefined;
+  ProfileStore: { uuid: string };
 };
 
 const Stack = createStackNavigator<HomeStackParamlist>();
 
 export default function HomeStack() {
-
   return (
     <Stack.Navigator>
       <Stack.Screen

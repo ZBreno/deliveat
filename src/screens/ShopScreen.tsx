@@ -1,5 +1,5 @@
 import { View, TouchableOpacity, ScrollView } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Divider, Text, useTheme } from "@ui-kitten/components";
 import HeaderNavigation from "../components/HeaderNavigation";
 import ArrowBack from "../components/ArrowBack";
@@ -9,54 +9,14 @@ import { InputField } from "../components/Form/FormFields";
 import OrderSummary from "../components/OrderSummary";
 import { StackScreenProps } from "@react-navigation/stack";
 import { ShopStackParamlist } from "../navigators/ShopStack";
+import useAsyncStorage from "../hooks/useAsyncStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
+export type ShopScreenProps = StackScreenProps<ShopStackParamlist, "Shop">;
 
-export type ShopScreenProps = StackScreenProps<ShopStackParamlist, 'Shop'>
-
-export default function ShopScreen({navigation}: ShopScreenProps) {
+export default function ShopScreen({ navigation }: ShopScreenProps) {
   const theme = useTheme();
-
-  const itens = [
-    {
-      name: "Hamburguer",
-      price: 19.9,
-      itens: [
-        {
-          name: "Queijo",
-          quantity: 1,
-        },
-        {
-          name: "Refrigerante",
-          quantity: 2,
-        },
-        {
-          name: "Ketchup",
-          quantity: 3,
-        },
-      ],
-    },
-    {
-      name: "Pizza",
-      price: 27.9,
-      itens: [
-        {
-          name: "Mussarela",
-          quantity: 1,
-        },
-        {
-          name: "Refrigerante 2L",
-          quantity: 2,
-        },
-        {
-          name: "Ketchup",
-          quantity: 3,
-        },
-        {
-          name: "Maionese",
-          quantity: 2,
-        },
-      ],
-    },
-  ];
+  const [shoppingCart] = useAsyncStorage("@ue:shopping-cart");
 
   const { control, handleSubmit, formState } = useForm({
     mode: "onChange",
@@ -64,6 +24,7 @@ export default function ShopScreen({navigation}: ShopScreenProps) {
       ticket: "",
     },
   });
+
   return (
     <ScrollView
       style={{ backgroundColor: "white", flex: 1, paddingHorizontal: 16 }}
@@ -78,7 +39,10 @@ export default function ShopScreen({navigation}: ShopScreenProps) {
           </View>
         }
         childrenRight={
-          <TouchableOpacity style={{ marginTop: 12 }}>
+          <TouchableOpacity
+            onPress={() => AsyncStorage.removeItem("@ue:shopping-cart")}
+            style={{ marginTop: 12 }}
+          >
             <Text
               style={{
                 textAlign: "center",
@@ -96,9 +60,17 @@ export default function ShopScreen({navigation}: ShopScreenProps) {
       </Text>
       <Divider />
       <View style={{ marginTop: 24, gap: 24, marginBottom: 24 }}>
-        {itens.map(({ name, price, itens }, index) => (
-          <OrderProduct itens={itens} name={name} price={price} key={index} />
-        ))}
+        {shoppingCart &&
+          Object.values(shoppingCart).map((product) => (
+            <OrderProduct
+              key={product.id}
+              itens={product.products_bonus}
+              name={product.name}
+              price={product.cost}
+              id={product.id}
+              quantity={product.quantity}
+            />
+          ))}
       </View>
       <Divider />
 
@@ -137,9 +109,9 @@ export default function ShopScreen({navigation}: ShopScreenProps) {
           total={120}
           totalDelivery={125}
           ticket={8.9}
-          totalFinal={125 - 8.90}
+          totalFinal={125 - 8.9}
           textButton="Continuar"
-          onPress={() => navigation.navigate('ShopFinish')}
+          onPress={() => navigation.navigate("ShopFinish")}
         />
       </View>
     </ScrollView>

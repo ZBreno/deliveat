@@ -1,20 +1,19 @@
-import { Image, ScrollView, View, StyleSheet } from "react-native";
+import { Image, View } from "react-native";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Button, Text, useTheme } from "@ui-kitten/components";
-import BottomSheet from "@gorhom/bottom-sheet";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
-import { CompositeScreenProps } from '@react-navigation/native';
-import { StackScreenProps } from '@react-navigation/stack';
-import { AppStackParamList } from "../navigators/AppStack";
+import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigators/RootStack";
 
-export type WelcomeScreenProps = StackScreenProps<RootStackParamList, 'Welcome'>
+export type WelcomeScreenProps = StackScreenProps<
+  RootStackParamList,
+  "Welcome"
+>;
 
-
-export default function WelcomeScreen({navigation}: WelcomeScreenProps) {
+export default function WelcomeScreen({ navigation }: WelcomeScreenProps) {
   const [hideOverlay, setHideOverlay] = useState<boolean>(false);
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -58,28 +57,6 @@ export default function WelcomeScreen({navigation}: WelcomeScreenProps) {
       </View>
       <View style={{ marginTop: 8, gap: 16 }}>
         <Button
-          accessoryLeft={() => (
-            <Image source={require("../assets/google-logo.png")} />
-          )}
-          status="info"
-          onPress={() => alert("calma meu fi")}
-        >
-          {(evaProps) => (
-            <Text
-              {...evaProps}
-              style={{
-                color: theme["white"],
-                width: "95%",
-                textAlign: "center",
-                marginLeft: -28,
-              }}
-              category="s2"
-            >
-              Continuar com o google
-            </Text>
-          )}
-        </Button>
-        <Button
           appearance="outline"
           onPress={() => handlePresentModalPress()}
           status="basic"
@@ -95,7 +72,11 @@ export default function WelcomeScreen({navigation}: WelcomeScreenProps) {
           )}
         </Button>
 
-        <Button appearance="ghost" style={{ marginTop: 8 }} onPress={() => navigation.navigate("Location")}>
+        <Button
+          appearance="ghost"
+          style={{ marginTop: 8 }}
+          onPress={() => navigation.navigate("Location")}
+        >
           {(evaProps) => (
             <Text {...evaProps} style={{ textAlign: "center" }} category="s1">
               Continuar como convidado
@@ -138,7 +119,6 @@ export default function WelcomeScreen({navigation}: WelcomeScreenProps) {
                   onPress={() => handleCloseModalPress()}
                   appearance="outline"
                   status="basic"
-                  
                 >
                   {(evaProps) => (
                     <Text

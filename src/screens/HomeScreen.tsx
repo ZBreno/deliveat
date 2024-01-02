@@ -1,4 +1,10 @@
-import { View, FlatList, ScrollView, TouchableOpacity } from "react-native";
+import {
+  View,
+  FlatList,
+  ScrollView,
+  TouchableOpacity,
+  ToastAndroid,
+} from "react-native";
 import React from "react";
 import { Text } from "@ui-kitten/components";
 import Category from "../components/Category";
@@ -14,6 +20,8 @@ import Store from "../components/Store";
 import LocationUser from "../components/LocationUser";
 import { useGetCategories } from "../hooks/categories";
 import LoadingContainer from "../components/LoadingContainer";
+import { useGetEstablishment, useGetUsers } from "../hooks/user";
+import { useGetTickets } from "../hooks/ticket";
 
 export type HomeScreenProps = CompositeScreenProps<
   StackScreenProps<HomeStackParamlist, "Home">,
@@ -21,20 +29,11 @@ export type HomeScreenProps = CompositeScreenProps<
 >;
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
-  const { isPending: isPendingCategory, isError, data: categories } = useGetCategories();
-
-  const tickets = [
-    {
-      title: "15%",
-      role: "válido apenas para primeira compra",
-      deadline: "08/09/2024",
-    },
-    {
-      title: "30%",
-      role: "válido apenas para primeira compra",
-      deadline: "08/09/2024",
-    },
-  ];
+  const { isPending: isPendingCategory, data: categories } = useGetCategories();
+  const { isPending: isPendingUsers, data: stories } = useGetUsers();
+  const { isPending: isPendingEstablishment, data: establishment } =
+    useGetEstablishment();
+  const { isPending: isPendingTickets, data: tickets } = useGetTickets();
 
   const est = [
     {
@@ -70,39 +69,16 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       source: require("../assets/snackbar-category.png"),
     },
   ];
-  const stories = [
-    {
-      image: require("../assets/bakery-category.png"),
-      name: "McDonalds",
-      category: "Restaurante",
-      open: true,
-      time: "20-30min",
-      cost_delivery: "7,00",
-      rate: "4.8",
-    },
-    {
-      image: require("../assets/snackbar-category.png"),
-      name: "Burguer King",
-      category: "Restaurante",
-      open: true,
-      time: "20-30min",
-      cost_delivery: "7,00",
-      rate: "4.8",
-    },
-    {
-      image: require("../assets/restaurant-category.png"),
-      name: "Subway",
-      category: "Restaurante",
-      open: false,
-      time: "20-30min",
-      cost_delivery: "7,00",
-      rate: "4.8",
-    },
-  ];
 
-  if (isPendingCategory){
-    return <LoadingContainer/>
+  if (
+    isPendingCategory ||
+    isPendingUsers ||
+    isPendingTickets ||
+    isPendingEstablishment
+  ) {
+    return <LoadingContainer />;
   }
+
   return (
     <ScrollView
       style={{
@@ -145,7 +121,9 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                 title={item.name}
                 width={80}
                 height={58}
-                source={require("../assets/snackbar-category.png")}
+                source={{
+                  uri: `${process.env.EXPO_PUBLIC_API_URL_DELIVERY}${item.image}`,
+                }}
                 borderRadius={8}
               />
             </TouchableOpacity>
@@ -157,9 +135,17 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         Cupons disponíveis
       </Text>
       <View style={{ gap: 16, marginBottom: 24 }}>
-        {tickets.map(({ title, deadline, role }, index) => (
-          <Ticket key={index} title={title} role={role} deadline={deadline} />
-        ))}
+        {(tickets || []).map(
+          ({ title, deadline, description, type }, index) => (
+            <Ticket
+              key={index}
+              title={title}
+              description={description}
+              deadline={deadline}
+              type={type}
+            />
+          )
+        )}
       </View>
 
       <Text style={{ marginBottom: 12 }} category="s1">
@@ -167,17 +153,24 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       </Text>
       <View style={{ marginBottom: 24 }}>
         <FlatList
-          data={est}
+          data={establishment}
           horizontal
           showsHorizontalScrollIndicator={false}
-          keyExtractor={(item) => item.title}
+          keyExtractor={(item) => item.name}
           renderItem={({ item }) => (
             <TouchableOpacity
-              key={item.title}
-              onPress={() => alert("dasd")}
+              key={item.name}
+              onPress={() =>
+                navigation.navigate("ProfileStore", { uuid: item.id })
+              }
               style={{ marginRight: 16 }}
             >
-              <Establishment title={item.title} source={item.source} />
+              <Establishment
+                title={item.name}
+                source={{
+                  uri: `${process.env.EXPO_PUBLIC_API_URL_DELIVERY}${item.profile_picture}`,
+                }}
+              />
             </TouchableOpacity>
           )}
         />
@@ -188,28 +181,30 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       </Text>
 
       <View style={{ gap: 16, marginBottom: 24 }}>
-        {stories.map(
-          (
-            { name, category, cost_delivery, image, open, rate, time },
-            index
-          ) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => navigation.navigate("ProfileStore")}
-            >
-              <Store
-                name={name}
-                category={category}
-                cost_delivery={cost_delivery}
-                image={image}
-                open={open}
-                rate={rate}
-                time={time}
-              />
-            </TouchableOpacity>
-          )
-        )}
+        {stories.map(({ name, profile_picture, id }, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => {
+              index % 2 == 0
+                ? navigation.navigate("ProfileStore", { uuid: id })
+                : ToastAndroid.show("Loja fechada", ToastAndroid.SHORT);
+            }}
+          >
+            <Store
+              name={name}
+              category={"Restaurante"}
+              cost_delivery={`R$ 10.00`}
+              image={{
+                uri: `${process.env.EXPO_PUBLIC_API_URL_DELIVERY}${profile_picture}`,
+              }}
+              open={index % 2 == 0}
+              rate={(Math.floor(Math.random() * 51) / 10).toFixed(1)}
+              time={"calma"}
+            />
+          </TouchableOpacity>
+        ))}
       </View>
     </ScrollView>
   );
 }
+("");

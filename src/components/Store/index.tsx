@@ -5,11 +5,7 @@ import Icon from "../Icon";
 
 type StoreProps = {
   name: string;
-  image: {
-    height: number;
-    width: number;
-    uri: string;
-  };
+  image: any;
   category: string;
   open: boolean;
   time: string;
@@ -20,7 +16,7 @@ type StoreProps = {
 export default function Store({
   name,
   category,
-  cost_delivery, 
+  cost_delivery,
   image,
   open,
   rate,
@@ -89,7 +85,9 @@ export default function Store({
                 borderRadius: 5,
               }}
             />
-            <Text style={{ fontSize: 12, marginLeft: 4 }}>R$ {cost_delivery}</Text>
+            <Text style={{ fontSize: 12, marginLeft: 4 }}>
+              R$ {cost_delivery}
+            </Text>
           </View>
         </View>
       </View>

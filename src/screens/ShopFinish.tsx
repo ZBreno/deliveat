@@ -37,7 +37,9 @@ export default function ShopFinish() {
   const paymentForm = useWatch({ control, name: "type" });
 
   return (
-    <ScrollView style={{ paddingHorizontal: 16, flex: 1, backgroundColor: "white" }}>
+    <ScrollView
+      style={{ paddingHorizontal: 16, flex: 1, backgroundColor: "white" }}
+    >
       <HeaderNavigation
         childrenLeft={<ArrowBack />}
         childrenCenter={
@@ -142,7 +144,7 @@ export default function ShopFinish() {
               caption="Caso não precise de troco, pode deixar o campo em branco"
             />
           )}
-          <View style={{marginBottom: 32}}>
+          <View style={{ marginBottom: 32 }}>
             <Text style={{ marginBottom: 16 }} category="s1">
               Resumo do pedido
             </Text>

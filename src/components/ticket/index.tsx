@@ -1,16 +1,25 @@
 import { View } from "react-native";
 import React from "react";
 import { Text, useTheme } from "@ui-kitten/components";
-import { ImageBackground } from "expo-image";
 
 type TicketProps = {
   title: string;
-  role: string;
+  description: string;
   deadline: string;
+  type: string;
 };
 
-export default function Ticket({ title, role, deadline }: TicketProps) {
+export default function Ticket({
+  title,
+  description,
+  deadline,
+  type,
+}: TicketProps) {
   const theme = useTheme();
+  const deadlineFormated = new Date(deadline);
+  const day = deadlineFormated.getDate();
+  const month = deadlineFormated.toLocaleString("pt-BR", { month: "long" }); // Mês por extenso
+  const year = deadlineFormated.getFullYear();
   return (
     <View
       style={{
@@ -25,7 +34,7 @@ export default function Ticket({ title, role, deadline }: TicketProps) {
           backgroundColor: theme["color-primary-500"],
           borderTopLeftRadius: 8,
           borderBottomLeftRadius: 8,
-          justifyContent: 'center'
+          justifyContent: "center",
         }}
       >
         <Text
@@ -37,7 +46,7 @@ export default function Ticket({ title, role, deadline }: TicketProps) {
           }}
           category="h6"
         >
-          {title}
+          {type}
         </Text>
       </View>
       <View
@@ -49,7 +58,7 @@ export default function Ticket({ title, role, deadline }: TicketProps) {
         }}
       >
         <View>
-          <Text style={{ fontSize: 14 }}>Cupom de boas vindas</Text>
+          <Text style={{ fontSize: 14 }}>{title}</Text>
           <Text
             style={{
               fontSize: 10,
@@ -57,11 +66,11 @@ export default function Ticket({ title, role, deadline }: TicketProps) {
               marginTop: -6,
             }}
           >
-            {role}
+            {description}
           </Text>
         </View>
         <View>
-          <Text style={{ fontSize: 11 }}>Disponível até {deadline} </Text>
+          <Text style={{ fontSize: 11 }}>Disponível até {day} de {month} de {year} </Text>
         </View>
       </View>
     </View>

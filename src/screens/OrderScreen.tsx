@@ -9,7 +9,10 @@ import { SelectField } from "../components/Form/FormFields";
 import { periodOptions } from "../utils/formOptions";
 import { Text } from "@ui-kitten/components";
 import Order from "../components/Order";
+import { useGetMyOrders } from "../hooks/orders";
+import LoadingContainer from "../components/LoadingContainer";
 export default function OrderScreen() {
+  const { isPending: isPendingMyOrders, data } = useGetMyOrders();
   const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       period: "",
@@ -41,6 +44,10 @@ export default function OrderScreen() {
       image: require("../assets/snackbar-category.png"),
     },
   ];
+
+  if (isPendingMyOrders) {
+    return <LoadingContainer />;
+  }
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}

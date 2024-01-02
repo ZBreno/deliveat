@@ -29,7 +29,6 @@ export default function SignUp({ navigation }: SignUpScreenProps) {
     document: Yup.string()
       .max(14, "CPF inválido")
       .test("valid-cpf", "CPF inválido", (value) => {
-        // Chame sua função de validação de CPF aqui
         return validateCPF(value);
       })
       .required("Esse campo é obrigatório"),
@@ -68,6 +67,9 @@ export default function SignUp({ navigation }: SignUpScreenProps) {
         onSuccess: () => {
           ToastAndroid.show("Conta criada!", ToastAndroid.SHORT),
             navigation.navigate("Login");
+        },
+        onError: (error) => {
+          console.log(JSON.stringify(error, null, 2));
         },
       }
     );

@@ -1,7 +1,8 @@
-import { View, Image, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import { View, Image, TouchableOpacity, ToastAndroid } from "react-native";
+import React, { useEffect, useState } from "react";
 import { Text, useTheme } from "@ui-kitten/components";
 import Icon from "../Icon";
+import useAsyncStorage from "../../hooks/useAsyncStorage";
 
 type Itens = {
   name: string;
@@ -12,26 +13,59 @@ type OrderProductProps = {
   name: string;
   itens: Itens[];
   price: number;
+  quantity: number;
+  id: string;
 };
 
 export default function OrderProduct({
   name,
   itens,
   price,
+  quantity,
+  id,
 }: OrderProductProps) {
   const theme = useTheme();
-  const [productQuantity, setProductQuantity] = useState<number>(1);
+  const [productQuantity, setProductQuantity] = useState<number>(quantity);
+  const [shoppingCart, setShoppingCart] = useAsyncStorage("@ue:shopping-cart");
+  const [forceUpdate, setForceUpdate] = useState(false);
 
   const handleProductQuantity = (operation: string) => {
     if (productQuantity === 1 && operation === "remove") {
-      alert("tem certeza que quer remover o item?");
-      setProductQuantity(1);
+      setShoppingCart((prev) => {
+        const updatedCart = { ...prev };
+        delete updatedCart[id];
+        return updatedCart;
+      });
+
+      ToastAndroid.show("Produto removido da sacola!", ToastAndroid.SHORT);
     } else if (operation === "add") {
+      setShoppingCart((prev) => {
+        return {
+          ...prev,
+          [id]: {
+            ...prev[id],
+            quantity: productQuantity + 1,
+          },
+        };
+      });
       setProductQuantity(productQuantity + 1);
     } else {
+      setShoppingCart((prev) => {
+        return {
+          ...prev,
+          [id]: {
+            ...prev[id],
+            quantity: productQuantity - 1,
+          },
+        };
+      });
       setProductQuantity(productQuantity - 1);
     }
   };
+
+  useEffect(() => {
+    setForceUpdate((prev) => !prev);
+  }, [shoppingCart]);
 
   const removeProduct = productQuantity === 1;
   return (
@@ -49,18 +83,19 @@ export default function OrderProduct({
         <View style={{ flex: 1, marginLeft: 12 }}>
           <Text category="s1">{name}</Text>
           <View>
-            {itens.map(({ name, quantity }, index) => (
-              <Text
-                key={index}
-                style={{
-                  fontSize: 11,
-                  fontFamily: "Poppins-Medium",
-                  color: theme["color-sended"],
-                }}
-              >
-                {quantity}x {name}
-              </Text>
-            ))}
+            {itens &&
+              itens.map(({ name, quantity }, index) => (
+                <Text
+                  key={index}
+                  style={{
+                    fontSize: 11,
+                    fontFamily: "Poppins-Medium",
+                    color: theme["color-sended"],
+                  }}
+                >
+                  {quantity}x {name}
+                </Text>
+              ))}
           </View>
 
           <View

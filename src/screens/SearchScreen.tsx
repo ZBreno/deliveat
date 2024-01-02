@@ -8,39 +8,9 @@ import { useForm } from "react-hook-form";
 import Icon from "../components/Icon";
 import { Text } from "@ui-kitten/components";
 import Category from "../components/Category";
+import { useGetCategories } from "../hooks/categories";
 export default function SearchScreen() {
-  const categories = [
-    {
-      title: "Restaurantes",
-      width: 170,
-      height: 90,
-      source: require("../assets/restaurant-category.png"),
-    },
-    {
-      title: "Bebidas",
-      width: 170,
-      height: 90,
-      source: require("../assets/drinks-category.png"),
-    },
-    {
-      title: "Padarias",
-      width: 170,
-      height: 90,
-      source: require("../assets/bakery-category.png"),
-    },
-    {
-      title: "Lanchonetes",
-      width: 170,
-      height: 90,
-      source: require("../assets/snackbar-category.png"),
-    },
-    {
-      title: "Lanchonetes1",
-      width: 170,
-      height: 90,
-      source: require("../assets/snackbar-category.png"),
-    },
-  ];
+  const { isPending: isPendingCategory, data: categories } = useGetCategories();
 
   const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
@@ -48,8 +18,7 @@ export default function SearchScreen() {
     },
   });
 
-  const { width } = Dimensions.get('window');
-
+  const { width } = Dimensions.get("window");
 
   return (
     <View style={{ backgroundColor: "white", flex: 1, paddingHorizontal: 16 }}>
@@ -72,14 +41,16 @@ export default function SearchScreen() {
         Categorias
       </Text>
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 16 }}>
-        {categories.map(({ height, source, title, }, index) => (
+        {categories.map(({ name, image }, index) => (
           <TouchableOpacity key={index}>
             <Category
-              height={height}
-              width={(width/2)-24}
-              title={title}
+              height={170}
+              width={width / 2 - 24}
+              title={name}
               borderRadius={4}
-              source={source}
+              source={{
+                uri: `${process.env.EXPO_PUBLIC_API_URL_DELIVERY}${image}`,
+              }}
             />
           </TouchableOpacity>
         ))}
