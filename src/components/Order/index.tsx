@@ -1,5 +1,5 @@
 import { View, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Text, useTheme } from "@ui-kitten/components";
 import { useGetStore } from "../../hooks/user";
 import LoadingContainer from "../LoadingContainer";
@@ -70,13 +70,13 @@ export default function Order({ store_id, code, status, id }: OrderProps) {
                 {store.name}
               </Text>
               <View
-                style={{ gap: 8, flexDirection: "row", alignItems: "center" }}
+                style={{ gap: 2, flexDirection: "row", alignItems: "center" }}
               >
                 <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium" }}>
                   código do pedido:
                 </Text>
                 <Text
-                  style={{ fontSize: 10, fontFamily: "Poppins-Medium" }}
+                  style={{ fontSize: 12, fontFamily: "Poppins-Medium" }}
                   numberOfLines={3}
                 >
                   #{code}
@@ -89,7 +89,7 @@ export default function Order({ store_id, code, status, id }: OrderProps) {
                   status do pedido:
                 </Text>
                 <Text
-                  style={{ fontSize: 10, fontFamily: "Poppins-Medium" }}
+                  style={{ fontSize: 12, fontFamily: "Poppins-Bold" }}
                   numberOfLines={3}
                 >
                   {status}

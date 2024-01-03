@@ -1,6 +1,5 @@
 import { ScrollView, View } from "react-native";
-import React, { lazy, useEffect, useState } from "react";
-import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect, useRef, useState } from "react";
 import HeaderNavigation from "../components/HeaderNavigation";
 import LocationUser from "../components/LocationUser";
 import NotificationTicket from "../components/NotificationIcon";
@@ -13,16 +12,29 @@ import { useGetMyOrders } from "../hooks/orders";
 import LoadingContainer from "../components/LoadingContainer";
 import { StackScreenProps } from "@react-navigation/stack";
 import { OrderStackParamlist } from "../navigators/OrderStack";
+import { useFocusEffect } from "@react-navigation/native";
+import request from "../utils/request";
 
 export type OrderScreenProps = StackScreenProps<OrderStackParamlist, "Order">;
 
 export default function OrderScreen({ navigation }: OrderScreenProps) {
-  const { isPending: isPendingMyOrders, data: orders } = useGetMyOrders();
-
   const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       period: "",
     },
+  });
+  const [orders, setOrders] = useState([]);
+  const [isPendingMyOrders, setIsPendingMyOrders] = useState<boolean>(true);
+
+  useFocusEffect(() => {
+    const fetchData = async () => {
+      const response = await request.get("order/list/my_orders");
+      if (response.data) {
+        setOrders(response.data);
+      }
+      setIsPendingMyOrders(false);
+    };
+    fetchData();
   });
 
   if (isPendingMyOrders) {
