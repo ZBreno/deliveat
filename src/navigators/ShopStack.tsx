@@ -6,7 +6,12 @@ import ShopFinish from "../screens/ShopFinish";
 
 export type ShopStackParamlist = {
   Shop: undefined;
-  ShopFinish: undefined;
+  ShopFinish: {
+    total: number;
+    ticket: number;
+    totalFinal: number;
+    delivery_cost: number;
+  };
 };
 
 const Stack = createStackNavigator<ShopStackParamlist>();
@@ -25,7 +30,7 @@ export default function ShopStack() {
         name="ShopFinish"
         component={ShopFinish}
         options={{
-         headerShown: false,
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

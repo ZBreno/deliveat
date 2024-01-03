@@ -24,6 +24,7 @@ import { useGetMyProducts } from "../hooks/products";
 import LoadingContainer from "../components/LoadingContainer";
 import useAsyncStorage from "../hooks/useAsyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useShop } from "../hooks/useShop";
 
 export type ProfileStoreScreenProps = StackScreenProps<
   HomeStackParamlist,
@@ -37,40 +38,11 @@ export default function ProfileStoreScreen({ route }: ProfileStoreScreenProps) {
   const { isPending: isPendingProducts, data: products } =
     useGetMyProducts(storeUUID);
 
-  const [shoppingCart, setShoppingCart] = useAsyncStorage(
-    "@ue:shopping-cart",
-    {}
-  );
+  const { handleShoppingCart } = useShop();
 
   if (isPendingStore || isPendingProducts) {
     return <LoadingContainer />;
   }
-
-  const handleShoppingCart = (product) => {
-    setShoppingCart((prev) => {
-      const existingProduct = prev[product.id];
-
-      if (existingProduct) {
-        return {
-          ...prev,
-          [product.id]: {
-            ...existingProduct,
-            quantity: existingProduct.quantity + 1,
-          },
-        };
-      } else {
-        return {
-          ...prev,
-          [product.id]: {
-            ...product,
-            quantity: 1,
-          },
-        };
-      }
-    });
-
-    ToastAndroid.show("Produto adicionado na sacola", ToastAndroid.SHORT);
-  };
 
   return (
     <View style={{ flex: 1, backgroundColor: "white", paddingHorizontal: 16 }}>
@@ -124,7 +96,7 @@ export default function ProfileStoreScreen({ route }: ProfileStoreScreenProps) {
                 fontSize: 12,
               }}
             >
-              Aberto até ás 22:00{" "}
+              entrega em {store.time_prepare}
             </Text>
             <View
               style={{
@@ -142,7 +114,7 @@ export default function ProfileStoreScreen({ route }: ProfileStoreScreenProps) {
                 fontSize: 12,
               }}
             >
-              Pedido min. R$ 15,00
+              Pedido min. R$ {store.delivery_cost.toFixed(2)}
             </Text>
           </View>
         </View>

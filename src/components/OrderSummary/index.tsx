@@ -5,7 +5,7 @@ import { Button, Text, useTheme } from "@ui-kitten/components";
 type OrderSummaryProps = {
   total: number;
   totalDelivery: number;
-  ticket?: number;
+  ticket: number | string;
   totalFinal: number;
   paymentForm?: string;
   textButton: string;
@@ -38,6 +38,12 @@ export default function OrderSummary({
       </View>
 
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text style={{ fontFamily: "Poppins-Medium" }}>Frete</Text>
+        <Text style={{ fontFamily: "Poppins-Medium" }}>
+          R$ {Number(7).toFixed(2)}
+        </Text>
+      </View>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={{ fontFamily: "Poppins-Medium" }}>Total com frete</Text>
         <Text style={{ fontFamily: "Poppins-Medium" }}>
           R$ {totalDelivery.toFixed(2)}
@@ -53,7 +59,7 @@ export default function OrderSummary({
               color: theme["color-success-900"],
             }}
           >
-            - R$ {ticket.toFixed(2)}
+            - R$ {typeof ticket === "string" ? "0.00" : ticket.toFixed(2)}
           </Text>
         </View>
       )}
@@ -66,7 +72,9 @@ export default function OrderSummary({
             marginTop: 16,
           }}
         >
-          <Text style={{ fontFamily: "Poppins-Medium" }}>Forma de pagamento</Text>
+          <Text style={{ fontFamily: "Poppins-Medium" }}>
+            Forma de pagamento
+          </Text>
           <Text style={{ fontFamily: "Poppins-Medium" }}>{paymentForm}</Text>
         </View>
       )}

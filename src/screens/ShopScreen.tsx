@@ -2,28 +2,60 @@ import { View, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, Divider, Text, useTheme } from "@ui-kitten/components";
 import HeaderNavigation from "../components/HeaderNavigation";
-import ArrowBack from "../components/ArrowBack";
 import OrderProduct from "../components/OrderProduct";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { InputField } from "../components/Form/FormFields";
 import OrderSummary from "../components/OrderSummary";
 import { StackScreenProps } from "@react-navigation/stack";
 import { ShopStackParamlist } from "../navigators/ShopStack";
-import useAsyncStorage from "../hooks/useAsyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useFocusEffect } from "@react-navigation/native";
+import { useShop } from "../hooks/useShop";
+import { useGetTicket } from "../hooks/ticket";
 export type ShopScreenProps = StackScreenProps<ShopStackParamlist, "Shop">;
 
 export default function ShopScreen({ navigation }: ShopScreenProps) {
   const theme = useTheme();
-  const [shoppingCart] = useAsyncStorage("@ue:shopping-cart");
+  const [total, setTotal] = useState(0);
+  const [ticketDiscount, setTicketDiscount] = useState(0);
 
-  const { control, handleSubmit, formState } = useForm({
+  const { control, handleSubmit, formState, setError } = useForm({
     mode: "onChange",
     defaultValues: {
       ticket: "",
     },
   });
+
+  const { shop } = useShop();
+  const code = useWatch({ control, name: "ticket" });
+
+  const handleSumShop = () => {
+    let sum = 0;
+    Object.values(shop).forEach((product) => {
+      sum = sum + product.quantity * product.cost;
+    });
+
+    setTotal(sum);
+  };
+  const { data, refetch } = useGetTicket(code ? code : "default-code");
+
+  const handleTicket = async (code) => {
+    if (Object.values(shop).length === 0) {
+      setTicketDiscount(0);
+
+      return;
+    }
+    refetch();
+    if (data) {
+      setTicketDiscount(data.discount);
+      return;
+    }
+    setTicketDiscount(0);
+    setError("ticket", { message: "cupom inválido" });
+  };
+
+  useEffect(() => {
+    handleSumShop();
+  }, [shop]);
 
   return (
     <ScrollView
@@ -60,21 +92,14 @@ export default function ShopScreen({ navigation }: ShopScreenProps) {
       </Text>
       <Divider />
       <View style={{ marginTop: 24, gap: 24, marginBottom: 24 }}>
-        {shoppingCart &&
-          Object.values(shoppingCart).map((product) => (
-            <OrderProduct
-              key={product.id}
-              itens={product.products_bonus}
-              name={product.name}
-              price={product.cost}
-              id={product.id}
-              quantity={product.quantity}
-            />
+        {shop &&
+          Object.values(shop).map((product) => (
+            <OrderProduct key={product.id} product={product} />
           ))}
       </View>
       <Divider />
 
-      <View style={{ flexDirection: "row", gap: 8, marginTop: 16 }}>
+      <View style={{ flexDirection: "row", marginTop: 16 }}>
         <View style={{ flex: 1 }}>
           <InputField
             name="ticket"
@@ -84,21 +109,27 @@ export default function ShopScreen({ navigation }: ShopScreenProps) {
           />
         </View>
 
-        <View style={{ justifyContent: "flex-end" }}>
-          <Button size="small">
-            {() => (
-              <Text
-                style={{
-                  color: theme["white"],
-                  fontSize: 13,
-                  fontFamily: "Poppins-SemiBold",
-                }}
-              >
-                Aplicar
-              </Text>
-            )}
-          </Button>
-        </View>
+        <Button
+          onPress={handleSubmit(handleTicket)}
+          size="small"
+          style={{
+            alignSelf: !formState.isValid ? "center" : "flex-end",
+            marginLeft: 8,
+            marginTop: !formState.isValid && 6,
+          }}
+        >
+          {() => (
+            <Text
+              style={{
+                color: theme["white"],
+                fontSize: 13,
+                fontFamily: "Poppins-SemiBold",
+              }}
+            >
+              Aplicar
+            </Text>
+          )}
+        </Button>
       </View>
       <View style={{ marginBottom: 32 }}>
         <Text style={{ marginTop: 24, marginBottom: 16 }} category="s1">
@@ -106,12 +137,19 @@ export default function ShopScreen({ navigation }: ShopScreenProps) {
         </Text>
 
         <OrderSummary
-          total={120}
-          totalDelivery={125}
-          ticket={8.9}
-          totalFinal={125 - 8.9}
+          total={total}
+          totalDelivery={total + 7}
+          ticket={ticketDiscount === 0 ? "0" : ticketDiscount}
+          totalFinal={total - ticketDiscount + 7}
           textButton="Continuar"
-          onPress={() => navigation.navigate("ShopFinish")}
+          onPress={() =>
+            navigation.navigate("ShopFinish", {
+              total: total,
+              totalFinal: total - ticketDiscount + 7,
+              ticket: ticketDiscount,
+              delivery_cost: 7,
+            })
+          }
         />
       </View>
     </ScrollView>

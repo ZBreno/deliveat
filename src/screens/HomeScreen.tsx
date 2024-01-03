@@ -136,13 +136,14 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       </Text>
       <View style={{ gap: 16, marginBottom: 24 }}>
         {(tickets || []).map(
-          ({ title, deadline, description, type }, index) => (
+          ({ title, deadline, description, discount, code }, index) => (
             <Ticket
               key={index}
               title={title}
               description={description}
               deadline={deadline}
-              type={type}
+              discount={discount}
+              code={code}
             />
           )
         )}

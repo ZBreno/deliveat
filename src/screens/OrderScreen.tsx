@@ -1,53 +1,34 @@
 import { ScrollView, View } from "react-native";
-import React from "react";
+import React, { lazy, useEffect, useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
 import HeaderNavigation from "../components/HeaderNavigation";
 import LocationUser from "../components/LocationUser";
 import NotificationTicket from "../components/NotificationIcon";
 import { useForm } from "react-hook-form";
-import * as Yup from "yup";
 import { SelectField } from "../components/Form/FormFields";
 import { periodOptions } from "../utils/formOptions";
 import { Text } from "@ui-kitten/components";
 import Order from "../components/Order";
 import { useGetMyOrders } from "../hooks/orders";
 import LoadingContainer from "../components/LoadingContainer";
-export default function OrderScreen() {
-  const { isPending: isPendingMyOrders, data } = useGetMyOrders();
+import { StackScreenProps } from "@react-navigation/stack";
+import { OrderStackParamlist } from "../navigators/OrderStack";
+
+export type OrderScreenProps = StackScreenProps<OrderStackParamlist, "Order">;
+
+export default function OrderScreen({ navigation }: OrderScreenProps) {
+  const { isPending: isPendingMyOrders, data: orders } = useGetMyOrders();
+
   const { control, handleSubmit, setValue } = useForm({
     defaultValues: {
       period: "",
     },
   });
-  const orders = [
-    {
-      name: "McDonalds",
-      itens:
-        "2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média 2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média 2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média",
-      image: require("../assets/snackbar-category.png"),
-    },
-    {
-      name: "Subway",
-      itens:
-        "2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média 2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média 2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média",
-      image: require("../assets/drinks-category.png"),
-    },
-    {
-      name: "Burguer King",
-      itens:
-        "2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média 2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média 2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média",
-      image: require("../assets/restaurant-category.png"),
-    },
-    {
-      name: "McDonalds",
-      itens:
-        "2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média 2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média 2x Hamburger (bigmac e mc-chicken) 1x Coca-cola 2L e 1x Batata média",
-      image: require("../assets/snackbar-category.png"),
-    },
-  ];
 
   if (isPendingMyOrders) {
     return <LoadingContainer />;
   }
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -63,8 +44,14 @@ export default function OrderScreen() {
         Meus pedidos
       </Text>
       <View style={{ gap: 24, marginBottom: 32 }}>
-        {orders.map(({ image, itens, name }, index) => (
-          <Order key={index} image={image} itens={itens} name={name} />
+        {orders.map(({ store_id, code, status, id }, index) => (
+          <Order
+            key={index}
+            status={status}
+            code={code}
+            store_id={store_id}
+            id={id}
+          />
         ))}
       </View>
     </ScrollView>

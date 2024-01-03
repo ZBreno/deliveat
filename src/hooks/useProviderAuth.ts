@@ -19,7 +19,7 @@ export const useProviderAuth = () => {
     queryKey: [...QueryKeys.me()],
     queryFn: async () => {
       try {
-        const response: any = await request.get('user/me');
+        const response: any = await request.get("user/me");
         setUser(response?.data);
         return response.data;
       } catch (error) {
@@ -51,7 +51,7 @@ export const useProviderAuth = () => {
   return {
     getLoggedUser,
     user,
-
+    setUser,
     loginMutation,
     logoutMutation,
   };

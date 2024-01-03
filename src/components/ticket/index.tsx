@@ -6,14 +6,16 @@ type TicketProps = {
   title: string;
   description: string;
   deadline: string;
-  type: string;
+  discount: string;
+  code: string;
 };
 
 export default function Ticket({
   title,
   description,
   deadline,
-  type,
+  code,
+  discount,
 }: TicketProps) {
   const theme = useTheme();
   const deadlineFormated = new Date(deadline);
@@ -46,7 +48,7 @@ export default function Ticket({
           }}
           category="h6"
         >
-          {type}
+          R$ {discount}
         </Text>
       </View>
       <View
@@ -58,7 +60,7 @@ export default function Ticket({
         }}
       >
         <View>
-          <Text style={{ fontSize: 14 }}>{title}</Text>
+          <Text style={{ fontSize: 14 }}>{title} ({code})</Text>
           <Text
             style={{
               fontSize: 10,
@@ -70,7 +72,9 @@ export default function Ticket({
           </Text>
         </View>
         <View>
-          <Text style={{ fontSize: 11 }}>Disponível até {day} de {month} de {year} </Text>
+          <Text style={{ fontSize: 11 }}>
+            Disponível até {day} de {month} de {year}{" "}
+          </Text>
         </View>
       </View>
     </View>

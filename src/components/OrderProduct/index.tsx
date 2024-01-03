@@ -3,76 +3,31 @@ import React, { useEffect, useState } from "react";
 import { Text, useTheme } from "@ui-kitten/components";
 import Icon from "../Icon";
 import useAsyncStorage from "../../hooks/useAsyncStorage";
-
-type Itens = {
-  name: string;
-  quantity: number;
-};
+import { useShop } from "../../hooks/useShop";
 
 type OrderProductProps = {
-  name: string;
-  itens: Itens[];
-  price: number;
-  quantity: number;
-  id: string;
+  product: {
+    name: string;
+    product_bonus: any;
+    cost: number;
+    quantity: number;
+    id: string;
+    image: any;
+  };
 };
 
-export default function OrderProduct({
-  name,
-  itens,
-  price,
-  quantity,
-  id,
-}: OrderProductProps) {
+export default function OrderProduct({ product }: OrderProductProps) {
+  const { shop, handleProductQuantity } = useShop();
   const theme = useTheme();
-  const [productQuantity, setProductQuantity] = useState<number>(quantity);
-  const [shoppingCart, setShoppingCart] = useAsyncStorage("@ue:shopping-cart");
-  const [forceUpdate, setForceUpdate] = useState(false);
 
-  const handleProductQuantity = (operation: string) => {
-    if (productQuantity === 1 && operation === "remove") {
-      setShoppingCart((prev) => {
-        const updatedCart = { ...prev };
-        delete updatedCart[id];
-        return updatedCart;
-      });
-
-      ToastAndroid.show("Produto removido da sacola!", ToastAndroid.SHORT);
-    } else if (operation === "add") {
-      setShoppingCart((prev) => {
-        return {
-          ...prev,
-          [id]: {
-            ...prev[id],
-            quantity: productQuantity + 1,
-          },
-        };
-      });
-      setProductQuantity(productQuantity + 1);
-    } else {
-      setShoppingCart((prev) => {
-        return {
-          ...prev,
-          [id]: {
-            ...prev[id],
-            quantity: productQuantity - 1,
-          },
-        };
-      });
-      setProductQuantity(productQuantity - 1);
-    }
-  };
-
-  useEffect(() => {
-    setForceUpdate((prev) => !prev);
-  }, [shoppingCart]);
-
-  const removeProduct = productQuantity === 1;
+  const removeProduct = product.quantity === 1;
   return (
     <View>
       <View style={{ flexDirection: "row" }}>
         <Image
-          source={require("../../assets/bakery-category.png")}
+          source={{
+            uri: `${process.env.EXPO_PUBLIC_API_URL_DELIVERY}${product.image}`,
+          }}
           style={{
             width: 120,
             height: 80,
@@ -81,10 +36,10 @@ export default function OrderProduct({
           }}
         />
         <View style={{ flex: 1, marginLeft: 12 }}>
-          <Text category="s1">{name}</Text>
+          <Text category="s1">{product.name}</Text>
           <View>
-            {itens &&
-              itens.map(({ name, quantity }, index) => (
+            {product.product_bonus &&
+              product.product_bonus.map(({ name, quantity }, index) => (
                 <Text
                   key={index}
                   style={{
@@ -107,11 +62,13 @@ export default function OrderProduct({
           >
             <View>
               <Text category="s1">
-                R$ {(price * productQuantity).toFixed(2)}
+                R$ {(product.cost * product.quantity).toFixed(2)}
               </Text>
             </View>
             <View style={{ flexDirection: "row", gap: 12 }}>
-              <TouchableOpacity onPress={() => handleProductQuantity("remove")}>
+              <TouchableOpacity
+                onPress={() => handleProductQuantity("remove", product)}
+              >
                 <Icon
                   name={removeProduct ? "trash-2-outline" : "minus-outline"}
                   themeFillColor={
@@ -120,8 +77,10 @@ export default function OrderProduct({
                   size={20}
                 />
               </TouchableOpacity>
-              <Text category="s1">{productQuantity}</Text>
-              <TouchableOpacity onPress={() => handleProductQuantity("add")}>
+              <Text category="s1">{product.quantity}</Text>
+              <TouchableOpacity
+                onPress={() => handleProductQuantity("add", product)}
+              >
                 <Icon
                   name="plus-outline"
                   themeFillColor="color-primary-500"

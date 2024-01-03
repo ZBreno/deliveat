@@ -8,8 +8,12 @@ import HeaderNavigation from "../components/HeaderNavigation";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../navigators/RootStack";
 import ArrowBack from "../components/ArrowBack";
+import { useAuth } from "../hooks/useAuth";
 
-export type LocationScreenProps = StackScreenProps<RootStackParamList, "Location">;
+export type LocationScreenProps = StackScreenProps<
+  RootStackParamList,
+  "Location"
+>;
 
 export default function LocationScreen({ navigation }: LocationScreenProps) {
   const theme = useTheme();
@@ -20,6 +24,8 @@ export default function LocationScreen({ navigation }: LocationScreenProps) {
     },
   });
 
+  const { setUser } = useAuth();
+
   return (
     <View
       style={{
@@ -29,9 +35,7 @@ export default function LocationScreen({ navigation }: LocationScreenProps) {
       }}
     >
       <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-        <HeaderNavigation
-          childrenLeft={<ArrowBack />}
-        />
+        <HeaderNavigation childrenLeft={<ArrowBack />} />
 
         <Text style={{ textAlign: "center", fontSize: 16, marginBottom: 16 }}>
           Em que local deseja receber seu pedido?
@@ -48,9 +52,9 @@ export default function LocationScreen({ navigation }: LocationScreenProps) {
         />
         <Button
           appearance="ghost"
-          onPress={() => {
-            alert("calmo pae");
-          }}
+          onPress={() =>
+            setUser({ name: "Convidado", email: "convidado@gmail.com" })
+          }
           style={{
             justifyContent: "flex-start",
             paddingHorizontal: 0,
@@ -89,9 +93,9 @@ export default function LocationScreen({ navigation }: LocationScreenProps) {
         <View style={{ alignItems: "center", marginTop: 40 }}>
           <Image source={require("../assets/location-dinner.png")} />
         </View>
-        
-        <View style={{ flex: 1  }}>
-          <Text style={{ textAlign: "center", marginTop: 24, fontSize: 14}}>
+
+        <View style={{ flex: 1 }}>
+          <Text style={{ textAlign: "center", marginTop: 24, fontSize: 14 }}>
             Já tem uma conta?
           </Text>
           <Button
@@ -112,7 +116,6 @@ export default function LocationScreen({ navigation }: LocationScreenProps) {
                 style={{
                   fontSize: 13,
                   color: theme["color-primary-500"],
-                  
                 }}
               >
                 Entre aqui

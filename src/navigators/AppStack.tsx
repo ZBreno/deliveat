@@ -9,6 +9,7 @@ import OrderStack from "./OrderStack";
 import ProfileStack from "./ProfileStack";
 import ShopStack from "./ShopStack";
 import SearchStack from "./SearchStack";
+import RateScreen from "../screens/RateScreen";
 
 export type AppStackParamList = {
   Home: undefined;
@@ -19,6 +20,7 @@ export type AppStackParamList = {
   ProfileStack: undefined;
   ShopStack: undefined;
   SearchStack: undefined;
+  RateScreen: { orderUUID: string };
 };
 
 const Stack = createStackNavigator<AppStackParamList>();
@@ -66,6 +68,11 @@ export default function AppStack() {
       <Stack.Screen
         name="SearchStack"
         component={SearchStack}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="RateScreen"
+        component={RateScreen}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

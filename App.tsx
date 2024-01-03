@@ -9,6 +9,7 @@ import { light as lightTheme } from "./custom-theme";
 import { default as mapping } from "./mapping.json";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "./src/providers/auth";
+import { ShopProvider } from "./src/providers/shop";
 
 const queryClient = new QueryClient();
 
@@ -19,9 +20,11 @@ export default function App() {
       <ApplicationProvider {...eva} theme={lightTheme} customMapping={mapping}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <NavigationContainer>
-              <RootStack />
-            </NavigationContainer>
+            <ShopProvider>
+              <NavigationContainer>
+                <RootStack />
+              </NavigationContainer>
+            </ShopProvider>
           </AuthProvider>
         </QueryClientProvider>
       </ApplicationProvider>

@@ -116,7 +116,7 @@ export default function WelcomeScreen({ navigation }: WelcomeScreenProps) {
               <View style={{ flexDirection: "row", gap: 16 }}>
                 <Button
                   style={{ flex: 1 }} // Defina o flex para 1 para ocupar o espaço restante
-                  onPress={() => handleCloseModalPress()}
+                  onPress={() => navigation.navigate("Login")}
                   appearance="outline"
                   status="basic"
                 >
@@ -132,7 +132,7 @@ export default function WelcomeScreen({ navigation }: WelcomeScreenProps) {
                 </Button>
                 <Button
                   style={{ flex: 1 }} // Defina o flex para 1 para ocupar o espaço restante
-                  onPress={() => handleCloseModalPress()}
+                  onPress={() => navigation.navigate("Login")}
                   appearance="outline"
                   status="basic"
                 >

@@ -27,13 +27,14 @@ const Stack = createStackNavigator<NotificationStackParamList>();
 
 export default function HomeTabs() {
   const theme = useTheme();
-
+  
   return (
     <Tab.Navigator
       initialRouteName="HomeTab"
       tabBar={(props) => <TabBarComponent {...props} />}
       screenOptions={({ route }) => ({
         headerShown: false,
+        lazy: true,
         tabBarHideOnKeyboard: false,
         tabBarActiveTintColor: theme["color-primary-default"],
         tabBarInactiveTintColor: theme["color-basic-600"],

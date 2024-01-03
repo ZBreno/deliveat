@@ -12,7 +12,7 @@ export default function LocationUser() {
       style={{ flexDirection: "row", gap: 4, alignItems: "center" }}
       onPress={() => navigation.navigate("Location")}
     >
-      <Text category="s1">Tenente Ananias, RN</Text>
+      <Text category="s1">Pau dos Ferros, RN</Text>
       <Icon
         name="chevron-down-outline"
         size={20}

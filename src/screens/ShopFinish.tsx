@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, ScrollView } from "react-native";
+import { View, TouchableOpacity, ScrollView, ToastAndroid } from "react-native";
 import React, { useEffect } from "react";
 import HeaderNavigation from "../components/HeaderNavigation";
 import { Text, useTheme } from "@ui-kitten/components";
@@ -10,31 +10,76 @@ import { useForm, useWatch } from "react-hook-form";
 import { InputField, SelectField } from "../components/Form/FormFields";
 import { paymentOptions } from "../utils/formOptions";
 import OrderSummary from "../components/OrderSummary";
+import { useAuth } from "../hooks/useAuth";
+import { useCreateOrder } from "../hooks/orders";
+import { StackScreenProps } from "@react-navigation/stack";
+import { ShopStackParamlist } from "../navigators/ShopStack";
+import { useShop } from "../hooks/useShop";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { AppStackParamList } from "../navigators/AppStack";
 
-export default function ShopFinish() {
+export type ShopScreenProps = StackScreenProps<
+  ShopStackParamlist,
+  "ShopFinish"
+>;
+
+export default function ShopFinish({ route }: ShopScreenProps) {
   const theme = useTheme();
-
+  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
   const schema = Yup.object().shape({
-    type: Yup.string().oneOf(
+    payment_method: Yup.string().oneOf(
       paymentOptions.map((option) => option.value),
       "Este campo é obrigatório"
     ),
-    payment: Yup.number()
+    change: Yup.number()
       .transform((value) => (Number.isNaN(value) ? 0 : value))
       .positive("O valor deve ser um número positivo")
       .nullable(),
+    observation: Yup.string().nullable(),
   });
 
   const { control, handleSubmit, formState } = useForm({
     mode: "onChange",
     defaultValues: {
-      type: "",
+      payment_method: "",
+      change: null,
+      observation: "",
     },
     resolver: yupResolver(schema),
   });
-  const onSubmit = (data) => alert(JSON.stringify(data, null, 2));
+  const { user } = useAuth();
+  const { shop } = useShop();
+  const createOrderMutation = useCreateOrder();
 
-  const paymentForm = useWatch({ control, name: "type" });
+  const onSubmit = (data) => {
+
+    createOrderMutation.mutate(
+      {
+        total: route.params.totalFinal,
+        address_id: user.addresses[0].id,
+        status: "PENDENTE",
+        store_id: Object.values(shop)[0].user_id,
+        products: Object.values(shop).map((product) => product.id),
+        ...data,
+      },
+
+      {
+        onSuccess: () => {
+          ToastAndroid.show("Pedido realizado!", ToastAndroid.SHORT);
+          navigation.navigate("Home");
+        },
+        onError: (err) => {
+          // console.log(JSON.stringify(err.config.data, null, 2));
+          ToastAndroid.show(
+            "Não foi possivel criar o pedido",
+            ToastAndroid.SHORT
+          );
+        },
+      }
+    );
+  };
+
+  const paymentForm = useWatch({ control, name: "payment_method" });
 
   return (
     <ScrollView
@@ -104,7 +149,9 @@ export default function ShopFinish() {
             <Icon name="pin" size={24} themeFillColor="color-primary-500" />
           </View>
           <View style={{ marginLeft: 8 }}>
-            <Text style={{ fontSize: 14 }}>Rua Maria Gomes da Silveira</Text>
+            <Text style={{ fontSize: 14 }}>
+              {user.addresses[0].street}, {user.addresses[0].number}
+            </Text>
             <Text
               style={{
                 fontSize: 12,
@@ -112,7 +159,7 @@ export default function ShopFinish() {
                 color: theme["color-sended"],
               }}
             >
-              Rua Nova
+              {user.addresses[0].district}
             </Text>
           </View>
         </View>
@@ -128,7 +175,7 @@ export default function ShopFinish() {
         <View style={{ gap: 16 }}>
           <SelectField
             control={control}
-            name="type"
+            name="payment_method"
             label="Tipo*"
             placeholder={"Escolha uma das opções"}
             options={paymentOptions}
@@ -137,22 +184,28 @@ export default function ShopFinish() {
           {paymentForm == "money" && (
             <InputField
               control={control}
-              name="payment"
+              name="change"
               label="Troco para?"
               placeholder="Digite aqui"
               keyboardType="numeric"
               caption="Caso não precise de troco, pode deixar o campo em branco"
             />
           )}
+          <InputField
+            control={control}
+            name="observation"
+            label="Observação"
+            placeholder="Digite aqui"
+          />
           <View style={{ marginBottom: 32 }}>
             <Text style={{ marginBottom: 16 }} category="s1">
               Resumo do pedido
             </Text>
             <OrderSummary
-              total={120}
-              totalDelivery={125}
-              ticket={8.9}
-              totalFinal={125 - 8.9}
+              total={route.params.total}
+              totalDelivery={7}
+              ticket={route.params.ticket === 0 ? "0" : route.params.ticket}
+              totalFinal={route.params.totalFinal}
               textButton="Finalizar compra"
               paymentForm={
                 paymentOptions.find((option) => option.value === paymentForm)

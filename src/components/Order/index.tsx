@@ -1,19 +1,28 @@
 import { View, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { Text, useTheme } from "@ui-kitten/components";
+import { useGetStore } from "../../hooks/user";
+import LoadingContainer from "../LoadingContainer";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { AppStackParamList } from "../../navigators/AppStack";
 
 type OrderProps = {
-  name: string;
-  image: {
-    height: number;
-    width: number;
-    uri: string;
-  };
-  itens: string;
+  store_id: string;
+  code: string;
+  status: string;
+  id: string;
 };
 
-export default function Order({name, image, itens}: OrderProps) {
+export default function Order({ store_id, code, status, id }: OrderProps) {
   const theme = useTheme();
+  const navigation = useNavigation<NavigationProp<AppStackParamList>>();
+
+  const { isPending: isPendingStore, data: store } = useGetStore(store_id);
+
+  if (isPendingStore) {
+    return <LoadingContainer />;
+  }
+
   return (
     <View
       style={{
@@ -31,7 +40,9 @@ export default function Order({name, image, itens}: OrderProps) {
       >
         <View>
           <Image
-            source={image}
+            source={{
+              uri: `${process.env.EXPO_PUBLIC_API_URL_DELIVERY}${store.profile_picture}`,
+            }}
             style={{
               width: 80,
               height: 80,
@@ -49,21 +60,48 @@ export default function Order({name, image, itens}: OrderProps) {
             }}
           >
             <View>
-              <Text style={{ fontSize: 14, fontFamily: "Poppins-Medium" }}>
-                {name}
-              </Text>
-              <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium" }}>
-                Itens:
-              </Text>
               <Text
-                style={{ fontSize: 10, fontFamily: "Poppins-Medium" }}
-                numberOfLines={3}
+                style={{
+                  fontSize: 14,
+                  fontFamily: "Poppins-Medium",
+                  marginBottom: 8,
+                }}
               >
-                {itens}
+                {store.name}
               </Text>
+              <View
+                style={{ gap: 8, flexDirection: "row", alignItems: "center" }}
+              >
+                <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium" }}>
+                  código do pedido:
+                </Text>
+                <Text
+                  style={{ fontSize: 10, fontFamily: "Poppins-Medium" }}
+                  numberOfLines={3}
+                >
+                  #{code}
+                </Text>
+              </View>
+              <View
+                style={{ gap: 2, flexDirection: "row", alignItems: "center" }}
+              >
+                <Text style={{ fontSize: 12, fontFamily: "Poppins-Medium" }}>
+                  status do pedido:
+                </Text>
+                <Text
+                  style={{ fontSize: 10, fontFamily: "Poppins-Medium" }}
+                  numberOfLines={3}
+                >
+                  {status}
+                </Text>
+              </View>
             </View>
             <View style={{ alignItems: "flex-end", flex: 1 }}>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate("RateScreen", { orderUUID: id })
+                }
+              >
                 <Text
                   style={{
                     textAlign: "center",
@@ -71,7 +109,7 @@ export default function Order({name, image, itens}: OrderProps) {
                     fontSize: 12,
                     fontFamily: "Poppins-Medium",
                     minWidth: 43,
-                    maxHeight: 20
+                    maxHeight: 20,
                   }}
                 >
                   Avaliar
